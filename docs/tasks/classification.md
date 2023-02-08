@@ -16,7 +16,7 @@ of that class are located or what their exact shape is.
 ## Train
 
 Train YOLOv8n-cls on the MNIST160 dataset for 100 epochs at image size 64. For a full list of available arguments
-see the [Configuration](../config.md) page.
+see the [Configuration](../cfg.md) page.
 
 !!! example ""
 
@@ -30,12 +30,12 @@ see the [Configuration](../config.md) page.
         model = YOLO("yolov8n-cls.pt")  # load a pretrained model (recommended for training)
         
         # Train the model
-        results = model.train(data="mnist160", epochs=100, imgsz=64)
+        model.train(data="mnist160", epochs=100, imgsz=64)
         ```
     === "CLI"
     
         ```bash
-        yolo task=classify mode=train data=mnist160 model=yolov8n-cls.pt epochs=100 imgsz=64
+        yolo classify train data=mnist160 model=yolov8n-cls.pt epochs=100 imgsz=64
         ```
 
 ## Val
@@ -55,13 +55,15 @@ it's training `data` and arguments as model attributes.
         model = YOLO("path/to/best.pt")  # load a custom model
         
         # Validate the model
-        results = model.val()  # no arguments needed, dataset and settings remembered
+        metrics = model.val()  # no arguments needed, dataset and settings remembered
+        metrics.top1   # top1 accuracy
+        metrics.top5   # top5 accuracy
         ```
     === "CLI"
     
         ```bash
-        yolo task=classify mode=val model=yolov8n-cls.pt  # val official model
-        yolo task=classify mode=val model=path/to/best.pt  # val custom model
+        yolo classify val model=yolov8n-cls.pt  # val official model
+        yolo classify val model=path/to/best.pt  # val custom model
         ```
 
 ## Predict
@@ -85,9 +87,10 @@ Use a trained YOLOv8n-cls model to run predictions on images.
     === "CLI"
     
         ```bash
-        yolo task=classify mode=predict model=yolov8n-cls.pt source="https://ultralytics.com/images/bus.jpg"  # predict with official model
-        yolo task=classify mode=predict model=path/to/best.pt source="https://ultralytics.com/images/bus.jpg"  # predict with custom model
+        yolo classify predict model=yolov8n-cls.pt source="https://ultralytics.com/images/bus.jpg"  # predict with official model
+        yolo classify predict model=path/to/best.pt source="https://ultralytics.com/images/bus.jpg"  # predict with custom model
         ```
+Read more details of `predict` in our [Predict](https://docs.ultralytics.com/predict/) page.
 
 ## Export
 
@@ -110,8 +113,8 @@ Export a YOLOv8n-cls model to a different format like ONNX, CoreML, etc.
     === "CLI"
     
         ```bash
-        yolo mode=export model=yolov8n-cls.pt format=onnx  # export official model
-        yolo mode=export model=path/to/best.pt format=onnx  # export custom trained model
+        yolo export model=yolov8n-cls.pt format=onnx  # export official model
+        yolo export model=path/to/best.pt format=onnx  # export custom trained model
         ```
 
     Available YOLOv8-cls export formats include:

@@ -136,6 +136,7 @@ wandb/
 .DS_Store
 
 # Neural Network weights -----------------------------------------------------------------------------------------------
+weights/
 *.weights
 *.pt
 *.pb
@@ -148,3 +149,4 @@ wandb/
 *_saved_model/
 *_web_model/
 *_openvino_model/
+*_paddle_model/

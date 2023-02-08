@@ -16,7 +16,7 @@ segmentation is useful when you need to know not only where objects are in an im
 ## Train
 
 Train YOLOv8n-seg on the COCO128-seg dataset for 100 epochs at image size 640. For a full list of available
-arguments see the [Configuration](../config.md) page.
+arguments see the [Configuration](../cfg.md) page.
 
 !!! example ""
 
@@ -30,12 +30,12 @@ arguments see the [Configuration](../config.md) page.
         model = YOLO("yolov8n-seg.pt")  # load a pretrained model (recommended for training)
         
         # Train the model
-        results = model.train(data="coco128-seg.yaml", epochs=100, imgsz=640)
+        model.train(data="coco128-seg.yaml", epochs=100, imgsz=640)
         ```
     === "CLI"
     
         ```bash
-        yolo task=segment mode=train data=coco128-seg.yaml model=yolov8n-seg.pt epochs=100 imgsz=640
+        yolo segment train data=coco128-seg.yaml model=yolov8n-seg.pt epochs=100 imgsz=640
         ```
 
 ## Val
@@ -55,13 +55,21 @@ retains it's training `data` and arguments as model attributes.
         model = YOLO("path/to/best.pt")  # load a custom model
         
         # Validate the model
-        results = model.val()  # no arguments needed, dataset and settings remembered
+        metrics = model.val()  # no arguments needed, dataset and settings remembered
+        metrics.box.map    # map50-95(B)
+        metrics.box.map50  # map50(B)
+        metrics.box.map75  # map75(B)
+        metrics.box.maps   # a list contains map50-95(B) of each category
+        metrics.seg.map    # map50-95(M)
+        metrics.seg.map50  # map50(M)
+        metrics.seg.map75  # map75(M)
+        metrics.seg.maps   # a list contains map50-95(M) of each category
         ```
     === "CLI"
     
         ```bash
-        yolo task=segment mode=val model=yolov8n-seg.pt  # val official model
-        yolo task=segment mode=val model=path/to/best.pt  # val custom model
+        yolo segment val model=yolov8n-seg.pt  # val official model
+        yolo segment val model=path/to/best.pt  # val custom model
         ```
 
 ## Predict
@@ -85,9 +93,10 @@ Use a trained YOLOv8n-seg model to run predictions on images.
     === "CLI"
     
         ```bash
-        yolo task=segment mode=predict model=yolov8n-seg.pt source="https://ultralytics.com/images/bus.jpg"  # predict with official model
-        yolo task=segment mode=predict model=path/to/best.pt source="https://ultralytics.com/images/bus.jpg"  # predict with custom model
+        yolo segment predict model=yolov8n-seg.pt source="https://ultralytics.com/images/bus.jpg"  # predict with official model
+        yolo segment predict model=path/to/best.pt source="https://ultralytics.com/images/bus.jpg"  # predict with custom model
         ```
+Read more details of `predict` in our [Predict](https://docs.ultralytics.com/predict/) page.
 
 ## Export
 
@@ -110,8 +119,8 @@ Export a YOLOv8n-seg model to a different format like ONNX, CoreML, etc.
     === "CLI"
     
         ```bash
-        yolo mode=export model=yolov8n-seg.pt format=onnx  # export official model
-        yolo mode=export model=path/to/best.pt format=onnx  # export custom trained model
+        yolo export model=yolov8n-seg.pt format=onnx  # export official model
+        yolo export model=path/to/best.pt format=onnx  # export custom trained model
         ```
 
     Available YOLOv8-seg export formats include:

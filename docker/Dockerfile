@@ -3,14 +3,18 @@
 # Image is CUDA-optimized for YOLOv8 single/multi-GPU training and inference
 
 # Start FROM NVIDIA PyTorch image https://ngc.nvidia.com/catalog/containers/nvidia:pytorch
-FROM nvcr.io/nvidia/pytorch:22.12-py3
-RUN rm -rf /opt/pytorch  # remove 1.2GB dir
+# FROM docker.io/pytorch/pytorch:latest
+FROM pytorch/pytorch:latest
 
 # Downloads to user config dir
 ADD https://ultralytics.com/assets/Arial.ttf https://ultralytics.com/assets/Arial.Unicode.ttf /root/.config/Ultralytics/
 
 # Install linux packages
-RUN apt update && apt install --no-install-recommends -y zip htop screen libgl1-mesa-glx
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt update
+RUN TZ=Etc/UTC apt install -y tzdata
+RUN apt install --no-install-recommends -y gcc git zip curl htop libgl1-mesa-glx libglib2.0-0 libpython3-dev gnupg
+# RUN alias python=python3
 
 # Create working directory
 RUN mkdir -p /usr/src/ultralytics
@@ -21,20 +25,23 @@ WORKDIR /usr/src/ultralytics
 RUN git clone https://github.com/ultralytics/ultralytics /usr/src/ultralytics
 
 # Install pip packages
-RUN python -m pip install --upgrade pip wheel
-RUN pip uninstall -y Pillow torchtext torch torchvision
-RUN pip install --no-cache ultralytics albumentations comet gsutil notebook Pillow>=9.1.0 \
-    'opencv-python<4.6.0.66' \
-    --extra-index-url https://download.pytorch.org/whl/cu113
+COPY requirements.txt .
+RUN python3 -m pip install --upgrade pip wheel
+RUN pip install --no-cache ultralytics albumentations comet gsutil notebook \
+    coremltools onnx onnx-simplifier onnxruntime openvino-dev>=2022.3
+    # tensorflow tensorflowjs \
 
 # Set environment variables
 ENV OMP_NUM_THREADS=1
+
+# Cleanup
+ENV DEBIAN_FRONTEND teletype
 
 
 # Usage Examples -------------------------------------------------------------------------------------------------------
 
 # Build and Push
-# t=ultralytics/ultralytics:latest && sudo docker build -f utils/docker/Dockerfile -t $t . && sudo docker push $t
+# t=ultralytics/ultralytics:latest && sudo docker build -f docker/Dockerfile -t $t . && sudo docker push $t
 
 # Pull and Run
 # t=ultralytics/ultralytics:latest && sudo docker pull $t && sudo docker run -it --ipc=host --gpus all $t
@@ -52,7 +59,7 @@ ENV OMP_NUM_THREADS=1
 # t=ultralytics/ultralytics:latest tnew=ultralytics/ultralytics:v6.2 && sudo docker pull $t && sudo docker tag $t $tnew && sudo docker push $tnew
 
 # Clean up
-# docker system prune -a --volumes
+# sudo docker system prune -a --volumes
 
 # Update Ubuntu drivers
 # https://www.maketecheasier.com/install-nvidia-drivers-ubuntu/
