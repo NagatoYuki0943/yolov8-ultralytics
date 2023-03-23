@@ -11,7 +11,7 @@ segmentation is useful when you need to know not only where objects are in an im
 
     YOLOv8 _segmentation_ models use the `-seg` suffix, i.e. `yolov8n-seg.pt` and are pretrained on COCO.
 
-[Models](https://github.com/ultralytics/ultralytics/tree/main/ultralytics/models/v8/seg){.md-button .md-button--primary}
+[Models](https://github.com/ultralytics/ultralytics/tree/main/ultralytics/models/v8){ .md-button .md-button--primary}
 
 ## Train
 
@@ -26,8 +26,9 @@ arguments see the [Configuration](../usage/cfg.md) page.
         from ultralytics import YOLO
         
         # Load a model
-        model = YOLO('yolov8n-seg.yaml')  # build a new model from scratch
+        model = YOLO('yolov8n-seg.yaml')  # build a new model from YAML
         model = YOLO('yolov8n-seg.pt')  # load a pretrained model (recommended for training)
+        model = YOLO('yolov8n-seg.yaml').load('yolov8n.pt')  # build from YAML and transfer weights
         
         # Train the model
         model.train(data='coco128-seg.yaml', epochs=100, imgsz=640)
@@ -35,7 +36,14 @@ arguments see the [Configuration](../usage/cfg.md) page.
     === "CLI"
     
         ```bash
+        # Build a new model from YAML and start training from scratch
+        yolo segment train data=coco128-seg.yaml model=yolov8n-seg.yaml epochs=100 imgsz=640
+
+        # Start training from a pretrained *.pt model
         yolo segment train data=coco128-seg.yaml model=yolov8n-seg.pt epochs=100 imgsz=640
+
+        # Build a new model from YAML, transfer pretrained weights to it and start training
+        yolo segment train data=coco128-seg.yaml model=yolov8n-seg.yaml pretrained=yolov8n-seg.pt epochs=100 imgsz=640
         ```
 
 ## Val
