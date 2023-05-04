@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 Image classification is the simplest of the three tasks and involves classifying an entire image into one of a set of
 predefined classes.
 
@@ -73,10 +77,16 @@ see the [Configuration](../usage/cfg.md) page.
 The YOLO classification dataset format is same as the torchvision format. Each class of images has its own folder and you have to simply pass the path of the dataset folder, i.e, `yolo classify train data="path/to/dataset"`
 ```
 dataset/
-├── class1/
-├── class2/
-├── class3/
-├── ...
+├── train/
+├──── class1/
+├──── class2/
+├──── class3/
+├──── ...
+├── val/
+├──── class1/
+├──── class2/
+├──── class3/
+├──── ...
 ```
 ## Val
 

@@ -27,7 +27,7 @@ class DetectionTrainer(BaseTrainer):
         Args:
             img_path (str): Path to the folder containing images.
             mode (str): `train` mode or `val` mode, users are able to customize different augmentations for each mode.
-            batch_size (int, optional): Size of batches, this is for `rect`. Defaults to None.
+            batch (int, optional): Size of batches, this is for `rect`. Defaults to None.
         """
         gs = max(int(de_parallel(self.model).stride.max() if self.model else 0), 32)
         return build_yolo_dataset(self.args, img_path, batch, self.data, mode=mode, rect=mode == 'val', stride=gs)
@@ -212,7 +212,6 @@ class Loss:
             pred_scores.detach().sigmoid(), (pred_bboxes.detach() * stride_tensor).type(gt_bboxes.dtype),
             anchor_points * stride_tensor, gt_labels, gt_bboxes, mask_gt)
 
-        target_bboxes /= stride_tensor
         target_scores_sum = max(target_scores.sum(), 1)
 
         # cls loss
@@ -221,6 +220,7 @@ class Loss:
 
         # bbox loss
         if fg_mask.sum():
+            target_bboxes /= stride_tensor
             loss[0], loss[2] = self.bbox_loss(pred_distri, pred_bboxes, anchor_points, target_bboxes, target_scores,
                                               target_scores_sum, fg_mask)
 
