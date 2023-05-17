@@ -9,7 +9,7 @@ import os
 import subprocess
 import time
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import numpy as np
@@ -195,7 +195,11 @@ class BaseTrainer:
         torch.cuda.set_device(RANK)
         self.device = torch.device('cuda', RANK)
         LOGGER.info(f'DDP settings: RANK {RANK}, WORLD_SIZE {world_size}, DEVICE {self.device}')
-        dist.init_process_group('nccl' if dist.is_nccl_available() else 'gloo', rank=RANK, world_size=world_size)
+        os.environ['NCCL_BLOCKING_WAIT'] = '1'  # set to enforce timeout
+        dist.init_process_group('nccl' if dist.is_nccl_available() else 'gloo',
+                                timeout=timedelta(seconds=3600),
+                                rank=RANK,
+                                world_size=world_size)
 
     def _setup_train(self, world_size):
         """
