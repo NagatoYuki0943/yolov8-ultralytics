@@ -3,10 +3,10 @@ from tqdm import tqdm
 import numpy as np
 import os
 
-#-------------------------------------------------#
+#----------------------------------------------------------------------#
 #   将coco格式的标注转换为yolo格式的标注
-#   不适用官方的coco json
-#-------------------------------------------------#
+#   不适用官方的coco json,官方的id从1开始,并且是90个类别,而平常用的是80个类别
+#----------------------------------------------------------------------#
 
 # coco json文件
 json_file = "D:/ml/code/datasets/coco/annotations/instances_val2017.json"
@@ -44,18 +44,20 @@ def coco2yolo():
 
 def bbox(annotations, images):
     for annotation in annotations:
-        image_id     = annotation["image_id"]
-        category_id  = annotation["category_id"]
-        bbox         = annotation["bbox"]           # coco: [x_min, ymin, width, height]
-        bbox[0]     += int(bbox[2] / 2)             # yolo: [x_center, y_center, width, height]
-        bbox[1]     += int(bbox[3] / 2)
-        height       = images[image_id]["height"]
-        width        = images[image_id]["width"]
-        x_center     = bbox[0] / width              # 归一化
-        y_center     = bbox[2] / width
-        width        = bbox[1] / height
-        height       = bbox[3] / height
-        bbox_line    = [str(category_id), str(x_center), str(y_center), str(width), str(height)]
+        image_id    = annotation["image_id"]
+        category_id = annotation["category_id"]
+        height      = images[image_id]["height"]
+        width       = images[image_id]["width"]
+
+        # bbox
+        bbox        = annotation["bbox"]            # coco: [x_min, ymin, width, height]
+        bbox[0]    += int(bbox[2] / 2)              # yolo: [x_center, y_center, width, height]
+        bbox[1]    += int(bbox[3] / 2)
+        x_center    = round(bbox[0] / width, 6)     # 归一化
+        y_center    = round(bbox[2] / width, 6)
+        width_      = round(bbox[1] / height, 6)
+        height_     = round(bbox[3] / height, 6)
+        bbox_line   = [str(category_id), str(x_center), str(y_center), str(width_), str(height_)]
         if "bbox_lines" not in images[image_id].keys():
             images[image_id]["bbox_lines"] = [bbox_line]
         else:
@@ -91,15 +93,25 @@ def sementation(annotations, images):
         height      = images[image_id]["height"]
         width       = images[image_id]["width"]
 
+        # bbox
+        bbox        = annotation["bbox"]            # coco: [x_min, ymin, width, height]
+        bbox[0]    += int(bbox[2] / 2)              # yolo: [x_center, y_center, width, height]
+        bbox[1]    += int(bbox[3] / 2)
+        x_center    = round(bbox[0] / width, 6)     # 归一化
+        y_center    = round(bbox[2] / width, 6)
+        width_      = round(bbox[1] / height, 6)
+        height_     = round(bbox[3] / height, 6)
+        bbox_line   = [str(category_id), str(x_center), str(y_center), str(width_), str(height_)]
+
         # 忽略 segmentation 为字典的数据,里面存储的为 "segmentation": {"counts": [], "size": []},含义不明
         if isinstance(annotation["segmentation"], dict):
             continue
         for segmentation in annotation["segmentation"]:
             segment = np.array(segmentation)
-            segment[0::2] /= width          # 归一化
+            segment[0::2] /= width                                      # 归一化
             segment[1::2] /= height
             segment = list(segment)
-            segment.insert(0, category_id)  # 添加类别id
+            segment = bbox_line + [str(round(s, 6)) for s in segment]   # 添加bbox
             if "segment_lines" not in images[image_id].keys():
                 images[image_id]["segment_lines"] = [segment]
             else:
@@ -116,7 +128,6 @@ def sementation(annotations, images):
             file_name = "".join(image["file_name"].split(".")[:-1]) + ".txt"
             with open(os.path.join(save_dir, file_name), mode="w", encoding="utf-8") as f:
                 for line in image["segment_lines"]:
-                    line = [str(l) for l in line]
                     f.write(" ".join(line) + "\n")
         else:
             empty_images.append(image["file_name"])
