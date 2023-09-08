@@ -170,7 +170,7 @@ If you use SAHI in your research or development work, please cite the original S
 !!! note ""
 
     === "BibTeX"
-
+    
         ```bibtex
         @article{akyon2022sahi,
           title={Slicing Aided Hyper Inference and Fine-tuning for Small Object Detection},
