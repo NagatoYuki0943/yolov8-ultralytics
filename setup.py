@@ -3,19 +3,37 @@
 import re
 from pathlib import Path
 
-import pkg_resources as pkg
 from setuptools import find_packages, setup
 
 # Settings
 FILE = Path(__file__).resolve()
 PARENT = FILE.parent  # root directory
 README = (PARENT / 'README.md').read_text(encoding='utf-8')
-REQUIREMENTS = [f'{x.name}{x.specifier}' for x in pkg.parse_requirements((PARENT / 'requirements.txt').read_text())]
 
 
 def get_version():
     file = PARENT / 'ultralytics/__init__.py'
     return re.search(r'^__version__ = [\'"]([^\'"]*)[\'"]', file.read_text(encoding='utf-8'), re.M)[1]
+
+
+def parse_requirements(file_path: Path):
+    """
+    Parse a requirements.txt file, ignoring lines that start with '#' and any text after '#'.
+
+    Args:
+        file_path (str | Path): Path to the requirements.txt file.
+
+    Returns:
+        List[str]: List of parsed requirements.
+    """
+
+    requirements = []
+    for line in Path(file_path).read_text().splitlines():
+        line = line.strip()
+        if line and not line.startswith('#'):
+            requirements.append(line.split('#')[0].strip())  # ignore inline comments
+
+    return requirements
 
 
 setup(
@@ -35,8 +53,11 @@ setup(
     author='Ultralytics',
     author_email='hello@ultralytics.com',
     packages=find_packages(),  # required
+    package_data={
+        '': ['*.yaml'],
+        'ultralytics.assets': ['*.jpg']},
     include_package_data=True,
-    install_requires=REQUIREMENTS,
+    install_requires=parse_requirements(PARENT / 'requirements.txt'),
     extras_require={
         'dev': [
             'ipython',
