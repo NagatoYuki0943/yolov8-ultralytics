@@ -431,7 +431,7 @@ def check_file(file, suffix='', download=True, hard=True):
     file = check_yolov5u_filename(file)  # yolov5n -> yolov5nu
     if not file or ('://' not in file and Path(file).exists()):  # exists ('://' check required in Windows Python<3.10)
         return file
-    elif download and file.lower().startswith(('https://', 'http://', 'rtsp://', 'rtmp://')):  # download
+    elif download and file.lower().startswith(('https://', 'http://', 'rtsp://', 'rtmp://', 'tcp://')):  # download
         url = file  # warning: Pathlib turns :// -> :/
         file = url2file(file)  # '%2F' to '/', split https://url.com/file.txt?auth
         if Path(file).exists():
@@ -516,8 +516,12 @@ def collect_system_info():
                 f"{'CUDA':<20}{torch.version.cuda if torch and torch.cuda.is_available() else None}\n")
 
     for r in parse_requirements(package='ultralytics'):
-        current = metadata.version(r.name)
-        is_met = '✅ ' if check_version(current, str(r.specifier)) else '❌ '
+        try:
+            current = metadata.version(r.name)
+            is_met = '✅ ' if check_version(current, str(r.specifier), hard=True) else '❌ '
+        except metadata.PackageNotFoundError:
+            current = '(not installed)'
+            is_met = '❌ '
         LOGGER.info(f'{r.name:<20}{is_met}{current}{r.specifier}')
 
 
