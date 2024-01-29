@@ -8,13 +8,13 @@ repo_url: https://github.com/ultralytics/ultralytics
 edit_uri: https://github.com/ultralytics/ultralytics/tree/main/docs/en/
 repo_name: ultralytics/ultralytics
 remote_name: https://github.com/ultralytics/docs
-docs_dir: "en/" # where to find the markdown files
-site_dir: "../site/" # where to publish to
+docs_dir: "docs/en/" # where to find the markdown files
+site_dir: "site/" # where to publish to
 
 theme:
   name: material
   language: en
-  custom_dir: overrides/
+  custom_dir: docs/overrides/
   logo: https://github.com/ultralytics/assets/raw/main/logo/Ultralytics_Logotype_Reverse.svg
   favicon: assets/favicon.ico
   icon:
@@ -337,6 +337,7 @@ nav:
       - Comet ML: integrations/comet.md
       - OpenVINO: integrations/openvino.md
       - ONNX: integrations/onnx.md
+      - TensorRT: integrations/tensorrt.md
       - Ray Tune: integrations/ray-tune.md
       - Roboflow: integrations/roboflow.md
       - MLflow: integrations/mlflow.md
@@ -367,6 +368,25 @@ nav:
           - Model: hub/sdk/model.md
           - Dataset: hub/sdk/dataset.md
           - Project: hub/sdk/project.md
+          - Reference:
+              - base:
+                  - api_client: hub/sdk/reference/base/api_client.md
+                  - auth: hub/sdk/reference/base/auth.md
+                  - crud_client: hub/sdk/reference/base/crud_client.md
+                  - paginated_list: hub/sdk/reference/base/paginated_list.md
+                  - server_clients: hub/sdk/reference/base/server_clients.md
+              - helpers:
+                  - error_handler: hub/sdk/reference/helpers/error_handler.md
+                  - exceptions: hub/sdk/reference/helpers/exceptions.md
+                  - logger: hub/sdk/reference/helpers/logger.md
+                  - utils: hub/sdk/reference/helpers/utils.md
+              - hub_client: hub/sdk/reference/hub_client.md
+              - modules:
+                  - datasets: hub/sdk/reference/modules/datasets.md
+                  - models: hub/sdk/reference/modules/models.md
+                  - projects: hub/sdk/reference/modules/projects.md
+                  - teams: hub/sdk/reference/modules/teams.md
+                  - users: hub/sdk/reference/modules/users.md
       - REST API:
           - hub/api/index.md
 
