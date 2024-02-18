@@ -60,7 +60,7 @@ theme:
     - navigation.instant
     - navigation.instant.progress
     - navigation.indexes
-    - navigation.sections
+    - navigation.sections # navigation.expand or navigation.sections
     - content.tabs.link # all code tabs change simultaneously
 
 # Customization
@@ -226,6 +226,7 @@ nav:
       - FastSAM (Fast Segment Anything Model): models/fast-sam.md
       - YOLO-NAS (Neural Architecture Search): models/yolo-nas.md
       - RT-DETR (Realtime Detection Transformer): models/rtdetr.md
+      - YOLO-World (Real-Time Open-Vocabulary Object Detection): models/yolo-world.md
   - Datasets:
       - datasets/index.md
       - NEW 🚀 Explorer:
@@ -245,6 +246,7 @@ nav:
           - VisDrone: datasets/detect/visdrone.md
           - VOC: datasets/detect/voc.md
           - xView: datasets/detect/xview.md
+          - Roboflow 100: datasets/detect/roboflow-100.md
       - Segmentation:
           - datasets/segment/index.md
           - COCO: datasets/segment/coco.md
@@ -295,6 +297,7 @@ nav:
       - Raspberry Pi: guides/raspberry-pi.md
       - Triton Inference Server: guides/triton-inference-server.md
       - Isolating Segmentation Objects: guides/isolating-segmentation-objects.md
+      - Edge TPU on Raspberry Pi: guides/coral-edge-tpu-on-raspberry-pi.md
       - Real-World Projects:
           - Object Counting: guides/object-counting.md
           - Object Cropping: guides/object-cropping.md
@@ -338,6 +341,7 @@ nav:
       - OpenVINO: integrations/openvino.md
       - ONNX: integrations/onnx.md
       - TensorRT: integrations/tensorrt.md
+      - CoreML: integrations/coreml.md
       - Ray Tune: integrations/ray-tune.md
       - Roboflow: integrations/roboflow.md
       - MLflow: integrations/mlflow.md
@@ -355,6 +359,7 @@ nav:
           - Datasets: hub/datasets.md
           - Projects: hub/projects.md
           - Models: hub/models.md
+          - Cloud Training: hub/cloud-training.md
           - Integrations: hub/integrations.md
           - Inference API: hub/inference-api.md
       - On-Premise:
